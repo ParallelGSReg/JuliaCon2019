@@ -1,7 +1,5 @@
 # JuliaCon2019
-JuliaCon 2019 archives for proceedings paper
-
-# GlobalSearchRegression [![Build Status](https://travis-ci.org/ParallelGSReg/GlobalSearchRegression.jl.svg?branch=master)](https://travis-ci.org/ParallelGSReg/GlobalSearchRegression.jl) [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://parallelgsreg.github.io/GlobalSearchRegression.jl/)
+## GlobalSearchRegression.jl: Building bridges between Machine Learning and Econometrics in Fat-Data scenarios
 
 ## Abstract
 The aim of this paper is twofold. The first one is to describe a novel research-project designed for building bridges between machine learning and econometric worlds. The second one is to introduce the main characteristics and comparative performance of the first Julia-native all-subset regression algorithm included in [GlobalSearchRegression.jl (v.1.0.3)](https://github.com/ParallelGSReg/GlobalSearchRegression.jl). As other available alternatives, this algorithm allows researchers to obtain the best model specification among all possible covariate combinations - in terms of user defined information criteria-, but up to 3165 and 197 times faster than STATA and R alternatives, respectively.## Credits
