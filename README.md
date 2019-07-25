@@ -4,7 +4,7 @@
 #### Authors
 Panigo Demian (CONICET, UNLP, UNDAV), Pablo, Gluzmann (CONICET, UNLP), Esteban Mocskos (CONICET, UBA), Adan Mauri Ungaro (UNLP), Valentin Ungaro (UNLP) and Nicolás Monzón (UNLP, UNDAV).
 
-### Abstract
+#### Abstract
 The aim of this paper is twofold. The first one is to describe a novel research-project designed for building bridges between machine learning and econometric worlds. The second one is to introduce the main characteristics and comparative performance of the first Julia-native all-subset regression algorithm included in [GlobalSearchRegression.jl (v.1.0.3)](https://github.com/ParallelGSReg/GlobalSearchRegression.jl). As other available alternatives, this algorithm allows researchers to obtain the best model specification among all possible covariate combinations - in terms of user defined information criteria-, but up to 3165 and 197 times faster than STATA and R alternatives, respectively.
 
 #### Credits
