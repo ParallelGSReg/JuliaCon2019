@@ -127,6 +127,29 @@ As for the memory setup, there are also alternative methodologies. First, it's n
 
 While some of these characteristics are shared with R and Stata alternatives (\verb MuMin-pdredge  and \verb GSREG,  respectively), our Static Load-Balancing algorithm outperform the round-robin R scheduling (implemented by the clusterapply function included in the \verb parallel  R-package see \cite{deb2013}) and the Shared-Array strategy significantly improves I/O performance against Stata. By construction, pure Static Load-Balancing in GlobalSearchRegression.jl avoids Round-Robin communication costs and execution gaps. This advantage overcompensate minimal\footnote{Minimal because our static scheduler guarantees that average task-complexity will not be too different among workers} load-asymmetries, associated with any static scheduling. In turn, using efficient shared-arrays to store all-subset-regression results allows us to outperform the \verb Stata-GSREG  methodology which heavily relies on slower I/O disk operations (because multiple instances must be launched to enable task-parallelism and, therefore, shared-arrays become unfeasible). \vskip 6pt
 
+\subsection{OLS estimation}
+\label{subsub:ols}
+Efficient Ordinary Least Squares (OLS) algorithms rely on Linear Algebra operations (matrix decomposition, matrix inversion, etc.).\footnote{Optimization alternatives (i.e. Gradient descent), while quite inefficient for linear models, can also be used for non-linear estimations \cite{abdi2007}} The traditional $(X'X)^{-1}$ operation could be time-expensive with unstable solutions under certain conditions \cite{jameson1981}. A preferred method is the QR-decomposition developed by Francis \cite{francis1961} and Kublanovskaya \cite{kublanovskaya1962s}. The QR factorization allows us to decompose any full rank $N \times p$ matrix $\bar{X}$ as:
+
+\begin{equation}
+    X=QR
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[•] $Q$ is a $N \times p$ matrix with $Q'Q=I$  ; and
+    \item[•] $R$ a $p \times p$ upper triangular matrix.
+\end{itemize}
+
+The QR decomposition is fast and provides stable numerical solutions under rank-deficient matrices. Alternative factorizations are either slower (SVD decomposition) or potentially unstable (Cholesky decomposition)\cite{agarwal2014}. \vskip 6pt
+
+\verb GlobalSearchRegression.jl  OLS estimation through QR-decompositions outperform existing Julia alternatives (like \verb GLM.jl)  allowing for large speed-ups compared with \verb R-lm    and \verb Stata-regress  commands. Table 3 shows execution time differences for a 200 covariates - 1000 observations - multivariate linear regression \footnote{Execution times were calculated for alternative OLS algorithms available for all-subset-regression packages in Julia,  %and Stata.}.
+\vskip 6pt
+
+It must be notice that execution times are compilation-free, because all-subset-regression algorithms must perform thousand to millions of regressions where compilation time is absent (it only affects the first regression).
+\vskip 6pt
+
 \input{bib.tex}
 \end{document}
 
