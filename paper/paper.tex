@@ -1,6 +1,7 @@
 % JuliaCon proceedings template
 \documentclass{juliacon}
 \usepackage{amsmath}
+\usepackage{algorithm}
 \setcounter{page}{1}
 
 \begin{document}
@@ -58,6 +59,60 @@ Written in Julia, GlobalSearchRegression is a parallel (and improved) version of
 
 Through the gsreg function of the \verb interface.jl  internal package, users set the appropriate database to be used, the general unrestricted model -GUM, which defines the search space- and additional options for model selection. With this information and complementary supporting functions and definitions provided by \verb strings.jl  -i.e. error messages-, \verb utils.jl  -i.e. equation formatting, combinatorial analysis, database manipulation, sorting results, etc.- and \verb gsreg_results.jl  -i.e. the structure to save estimation results-, the \verb core.jl  package perform the all-subset-regression algorithm explained in the pseudocode below, to obtain the following outputs: 1) a matrix -optionally exported to a csv file through \verb utils.jl-  including egression coefficients, selection criteria, observations and (optionally) t-test, residual tests, averaging-weights and out-of-sample metrics for every lternative model; 2) a text file -also displayed on screen- which contains the best model specification and (optionally) model averaging results in terms of he user-selected information criteria -see multiple examples in \verb runtest.jl-. \vskip 6pt
 \break
+
+\begin{algorithm}[ht]
+  \scriptsize
+  \caption{module Core.jl}
+  \begin{enumerate}
+    
+    \item[1.] \textit{\textbf{function} gsreg\_single\_proc\_results!(args…)}
+    \begin{enumerate}
+        \item[1.1.] Select regression covariates
+        \item[1.2.] Perform QR Decomposition
+        \item[1.3.] Estimate regression results
+        \item[1.4.] Calculate additional tests
+        \item[1.5.] Save individual results in a Shared Array
+    \end{enumerate}
+    \item[] \textbf{end} \textit{function gsreg\_single\_proc\_results!(args…)}
+
+\vspace{2mm}
+    
+    \item[2.] \textit{\textbf{function} gsreg\_proc\_results!(args…)}
+    \begin{enumerate}
+        \item[2.1.] \textbf{for} $j=1$ : $((k^2-1)/ nworkers)$ \textit{\# where nworkers is the user defined number of cores, and k is the numbers of covariates in the GUM}
+        \begin{enumerate}
+            \item[2.1.1.] $order = (j -1) * nworkers + workerID$
+            \item[2.1.2.] \textit{gsreg\_single\_proc\_results!(order, args...)}
+        \end{enumerate}
+        \item[] \textbf{end} for
+    \end{enumerate}
+    \item[] \textbf{end} \textit{function gsreg\_single\_proc\_results!(args…)}
+    
+\vspace{2mm}
+
+    \item[3.] \textit{\textbf{function} proc!(args…)}
+    \begin{enumerate}
+        \item[3.1.] Create environment (Shared Array and other objects)
+        \item[3.2.] for $workerID = 1:nworkers$
+        \begin{enumerate}
+            \item[3.2.1] spawn jobs among workerIDs to perform gsreg\_proc\_results!
+        \end{enumerate}
+        \item[] \textbf{end} for
+        \item[3.3.] Perform vector operations
+        \item[3.4.] Call \verb utils.jl  sort function
+        \item[3.5.] Create results array
+    \end{enumerate}
+    \item[] \textbf{end} \textit{function proc!(args…)}
+ 
+\vspace{2mm}
+
+    \item[4.] Export results using \verb gsreg\_results.jl   structure
+    \item[5.] Export summary results to a txt file 
+    \item[6.] Optionally send the results structure to \verb utils.jl  to export a csv file.
+  \end{enumerate}
+
+\textbf{end} module \verb Core.jl .
+\end{algorithm}
 
 
 \input{bib.tex}
