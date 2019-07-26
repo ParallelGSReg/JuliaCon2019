@@ -1,11 +1,9 @@
 % JuliaCon proceedings template
 \documentclass{juliacon}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{listings}
 \usepackage{subfigure}
 \usepackage{amsmath}
+\usepackage{multirow}
 \setcounter{page}{1}
 
 \input{header}
@@ -59,11 +57,11 @@ Through the gsreg function of the \verb interface.jl  internal package, users se
 \break
 
 %%%%%%%%%%%%%%%%%%%%%%% Algorithm 1
-\begin{listing}
-\hline
+\begin{minipage}{0.5\textwidth}
+\hrule
 \center{ \textbf{Pseudo-code for module Core.jl}}
 \vspace{2mm}
-\hline
+\hrule
   \begin{enumerate}
     
     \item[1.] \textit{\textbf{function} gsreg\_single\_proc\_results!(args…)}
@@ -115,8 +113,8 @@ Through the gsreg function of the \verb interface.jl  internal package, users se
 \begin{flushleft}
 \textbf{end} module \verb Core.jl . \hfill
 \end{flushleft}
-\hline
-\end{listing}
+\hrule
+\end{minipage}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Comparative performance against \textit{R} and \textit{STATA}}
 \label{sec:comparativeperf}
