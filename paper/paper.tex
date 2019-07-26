@@ -212,25 +212,11 @@ However, for databases with 20 or more covariates, our Julia all-subset-regressi
 
 A detailed speed-up analysis is also available for the 25-covariate case. In figure 3, it's shown that our Julia all-subset-regression algorithm scales almost linearly for large databases -while the number of threads is not higher than the number of physical cores-. With small databases, Amdhal's law \cite{Amdahl1967}inputs change. Parallel tasks become lighter and speed-up efficiency degrades consistently with additional threads, because the marginal overhead cost of a larger environment creation is not overcompensated by parallelism gains obtained from additional threads. Notwithstanding, using only physical cores speed-up efficiency is always above 45 \%  -with an average of 84\% for 2, 4, 8 and 16 threads-. 
 
-%%%%%%%%%%%%%%%%%% Figure 2
-
 \begin{figure*}[!t]
-  \begin{subfigure}
-    \centering
-    \includegraphics[width=5.5cm]{paper/juliatime.png}
-  \end{subfigure}
-    \centering
-  \begin{subfigure}
-    \includegraphics[width=5.5cm]{paper/statatime.png}
-  \end{subfigure}
-    \centering
-  \begin{subfigure}
-    \includegraphics[width=5.5cm]{paper/rtime.png}
-  \end{subfigure}
-  \vspace{2mm}
-\caption{Execution time Kernel Densities from Julia, R and Stata}
+    \centrline{\includegraphics[width=16cm]{paper/juliaexe.PNG}} 
+    %\vspace{2mm}
+    \caption{Execution time, speed-up and speed-up efficiency for the 25-covariate case using GlobalSearchRegression.jl}
 \end{figure*}
-
 
 \section{Why GlobalSearchRegression.jl is faster than existing alternatives?}
 \label{sec:whygsreg}
