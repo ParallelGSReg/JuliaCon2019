@@ -213,8 +213,6 @@ However, for databases with 20 or more covariates, our Julia all-subset-regressi
 A detailed speed-up analysis is also available for the 25-covariate case. In figure 3, it's shown that our Julia all-subset-regression algorithm scales almost linearly for large databases -while the number of threads is not higher than the number of physical cores-. With small databases, Amdhal's law \cite{Amdahl1967}inputs change. Parallel tasks become lighter and speed-up efficiency degrades consistently with additional threads, because the marginal overhead cost of a larger environment creation is not overcompensated by parallelism gains obtained from additional threads. Notwithstanding, using only physical cores speed-up efficiency is always above 45 \%  -with an average of 84\% for 2, 4, 8 and 16 threads-. 
 
 
-
-
 \section{Why GlobalSearchRegression.jl is faster than existing alternatives?}
 \label{sec:whygsreg}
 \subsection{JULIA platform}
@@ -223,9 +221,40 @@ A detailed speed-up analysis is also available for the 25-covariate case. In fig
 Despite some \verb GlobalSearchRegression.jl  specific features to be examined below, our all-subset-regression algorithm benefits from the well-known Julia language efficiency for High Performance Computing tasks.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% INSERT PSEUDOCODE HERE TABLE 2
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Table 2
+\begin{table}[!h]
+\centering
+\tbl{Julia speed-up over STATA and R in basic functions}{
+    \begin{tabular}{|l|c|c|}
+    \hline
+    Function & Speed-up over R & Speed-up over Stata \\
+    \hline
+    \hline
+    recursion\_fibonacci & 251.28 & 76.92 \\
+    \hline
+    recursion\_quicksort & 32.36 & 48.54 \\
+    \hline
+    matrix\_multiply & 11.6 & 14.07 \\
+    \hline
+    iteration\_pi\_sum & 14.33 & 26.89 \\
+    \hline
+    matrix\_statistics & 7.65 & 44.92 \\
+    \hline
+    parse\_integers & 28.4 & 49.38 \\
+    \hline
+    userfunc\_mandelbrot & 175.44 & 368.42 \\
+    \hline
+    \hline
+    Simple-Average & 74.44 & 89.88 \\
+    \hline
+    Weighted-Average & 12.15 & 22.01 \\
+    \hline
+    \end{tabular}
+    }
+    \begin{tabnote}
+Note: Weighted-average were estimated as the Ratio between total execution time for R or Stata, and Julia's total execution time -for all basic functions-. Benchmarkings were obtained using a i7-4700MQ quad-core build, with 8 GiB of DDR3 1600 Mhz RAM, under Windows 8 and running Julia 1.1.0, Stata 15 and R 3.5.3.
+   \end{tabnote}
+\end{table}
 
 Julia JIT-compilation allows packages to run faster than those executed using interpreted or byte-compiled languages (like R or Stata-Mata). Indeed, basic functions running on Julia can be up to 251 and 368 times faster than those running in R and Stata, respectively -with an average speed-up of 75 and 90, see Table 2-.
 
