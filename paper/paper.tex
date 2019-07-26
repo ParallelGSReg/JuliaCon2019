@@ -78,7 +78,7 @@ However, for databases with 20 or more covariates, our Julia all-subset-regressi
 A detailed speed-up analysis is also available for the 25-covariate case. In figure 3, it's shown that our Julia all-subset-regression algorithm scales almost linearly for large databases -while the number of threads is not higher than the number of physical cores-. With small databases, Amdhal's law \cite{Amdahl1967}inputs change. Parallel tasks become lighter and speed-up efficiency degrades consistently with additional threads, because the marginal overhead cost of a larger environment creation is not overcompensated by parallelism gains obtained from additional threads. Notwithstanding, using only physical cores speed-up efficiency is always above 45 \%  -with an average of 84\% for 2, 4, 8 and 16 threads-. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% INSERT PSEUDOCODE HERE IN TABLES OR FIGURES 2 and 3
+% INSERT PSEUDOCODE HERE  FIGURES 2 and 3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Why GlobalSearchRegression.jl is faster than existing alternatives?}
@@ -90,40 +90,63 @@ Despite some \verb GlobalSearchRegression.jl  specific features to be examined b
 
 \vspace{-2mm}
 
-%%%%%%%%%%%%%%%%%% Table 2
-\begin{table}[!h]
-\centering
-\tbl{Julia speed-up over STATA and R in basic functions}{
-    \begin{tabular}{|l|c|c|}
-    \hline
-    Function & Speed-up over R & Speed-up over Stata \\
-    \hline
-    \hline
-    recursion\_fibonacci & 251.28 & 76.92 \\
-    \hline
-    recursion\_quicksort & 32.36 & 48.54 \\
-    \hline
-    matrix\_multiply & 11.6 & 14.07 \\
-    \hline
-    iteration\_pi\_sum & 14.33 & 26.89 \\
-    \hline
-    matrix\_statistics & 7.65 & 44.92 \\
-    \hline
-    parse\_integers & 28.4 & 49.38 \\
-    \hline
-    userfunc\_mandelbrot & 175.44 & 368.42 \\
-    \hline
-    \hline
-    Simple-Average & 74.44 & 89.88 \\
-    \hline
-    Weighted-Average & 12.15 & 22.01 \\
-    \hline
-    \multicolumn{3}{p{8.5cm}}{Note: Weighted-average were estimated as the Ratio between total execution time for R or Stata, and Julia's total execution time. Benchmarkings were obtained using a i7-4700MQ quad-core build, with 8 GiB of DDR3 1600 Mhz RAM, under Windows 8 and running Julia 1.1.0, Stata 15 and R %3.5.3}
-    \end{tabular}
-    }
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INSERT PSEUDOCODE HERE TABLE 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Julia JIT-compilation allows packages to run faster than those executed using interpreted or byte-compiled languages (like R or Stata-Mata). Indeed, basic functions running on Julia can be up to 251 and 368 times faster than those running in R and Stata, respectively -with an average speed-up of 75 and 90, see Table 2-.
+
+\subsection{Parallel strategy and memory setup}
+\label{subsub:parallelst}
+It is well know that multicore architectures can be used to speed-up execution times through two main paradigms: data and task-parallelism \cite{zaki2001}. The preferred strategy critically depends on:
+\begin{enumerate}
+    \item Database structure;
+    \item Algorithm serial portion; and
+    \item Interthread communication costs.
+\end{enumerate} 
+The first discussion is about tall vs fat data. While tall databases are more suitable for data-parallelism \cite{babu2013}, fat-structures improve relative performance of task-parallelism (because tasks increase exponentially with covariates/columns in feature selection problems, see \cite{foster1994}). \vskip 6pt
+
+Additionally, the choice between alternative paradigms takes into account the Amdahl's Law for the specific algorithm to be used. Task-parallelism is usually better for econometric and machine learning algorithms requiring some specific serial optimization paths (i.e. arima-arfima models), while data-parallelism performs better under linear-algebra solutions (i.e. OLS-family estimators, see \cite{guo2012}). \vskip 6pt
+
+Finally, we have the problem of intercomunication costs. Data-parallelism -generally- involves intense needs of inter-thread-communication. While task-parallelism communication costs depends on Load-Balancing choices (i.e. Dynamic vs Static), they are usually lower than data-parallelism ones \footnote{At least when Static Load Balancing is implemented, because it allows for Coarse-grained granularity \cite{gordon2006}} \cite{MOREANO2017}. \vskip 6pt
+
+For feature selection problems, pros and cons of alternative strategies often determine that available cores should be used for task parallelism. Databases are fat, data-mining algorithms can include large serial portions, and intercomunication costs can be huge for large-multicore architectures. These reasons explain why all available all-subset-regression packages use taks-parallism to speed-up execution times. \vskip 6pt
+
+As for the memory setup, there are also alternative methodologies. First, it's necessary to choose among Static vs. Dynamic memory allocations \citeprajapati2015}. To improve speed-up, Static "once-and-for-all" allocations are often preferred (even at a cost of higher average memory utilization). Second, shared-memory strategies must be determined. Depending on both object-size and CPU architecture -cache size and its distribution among cores-, it could be optimal to use large shared arrays or -alternatively- smaller core-specific objects. Splitting output matrices to work with smaller non-shared arrays could be useful for cache optimization purposes, but it could also entail additional communication costs and higher memory requirements \cite{ahmed2015}. In practice, feature selection algorithms usually prefer shared-arrays for high performance computing. \vskip 6pt
+
+\verb GlobalSearchRegression.jl  (execution-time) advantages have been obtained combining:
+\begin{itemize}
+    \item[a)]  Task-parallelism
+    \item[b)]  Static Load-Balancing
+    \item[c)]  Coarse-grained granularity   
+    \item[d)]  Static memory allocation
+    \item[e)]  Efficient shared-array implementation
+\end{itemize}
+
+While some of these characteristics are shared with R and Stata alternatives (\verb MuMin-pdredge  and \verb GSREG,  respectively), our Static Load-Balancing algorithm outperform the round-robin R scheduling (implemented by the clusterapply function included in the \verb parallel  R-package see \cite{deb2013}) and the Shared-Array strategy significantly improves I/O performance against Stata. By construction, pure Static Load-Balancing in GlobalSearchRegression.jl avoids Round-Robin communication costs and execution gaps. This advantage overcompensate minimal\footnote{Minimal because our static scheduler guarantees that average task-complexity will not be too different among workers} load-asymmetries, associated with any static scheduling. In turn, using efficient shared-arrays to store all-subset-regression results allows us to outperform the \verb Stata-GSREG  methodology which heavily relies on slower I/O disk operations (because multiple instances must be launched to enable task-parallelism and, therefore, shared-arrays become unfeasible). \vskip 6pt
+
+\subsection{OLS estimation}
+\label{subsub:ols}
+Efficient Ordinary Least Squares (OLS) algorithms rely on Linear Algebra operations (matrix decomposition, matrix inversion, etc.).\footnote{Optimization alternatives (i.e. Gradient descent), while quite inefficient for linear models, can also be used for non-linear estimations \cite{abdi2007}} The traditional $(X'X)^{-1}$ operation could be time-expensive with unstable solutions under certain conditions \cite{jameson1981}. A preferred method is the QR-decomposition developed by Francis \cite{francis1961} and Kublanovskaya \cite{kublanovskaya1962s}. The QR factorization allows us to decompose any full rank $N \times p$ matrix $\bar{X}$ as:
+
+\begin{equation}
+    X=QR
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[•] $Q$ is a $N \times p$ matrix with $Q'Q=I$  ; and
+    \item[•] $R$ a $p \times p$ upper triangular matrix.
+\end{itemize}
+
+The QR decomposition is fast and provides stable numerical solutions under rank-deficient matrices. Alternative factorizations are either slower (SVD decomposition) or potentially unstable (Cholesky decomposition)\cite{agarwal2014}. \vskip 6pt
+
+\verb GlobalSearchRegression.jl  OLS estimation through QR-decompositions outperform existing Julia alternatives (like \verb GLM.jl)  allowing for large speed-ups compared with \verb R-lm    and \verb Stata-regress  commands. Table 3 shows execution time differences for a 200 covariates - 1000 observations - multivariate linear regression \footnote{Execution times were calculated for alternative OLS algorithms available for all-subset-regression packages in Julia, and Stata.}.
+\vskip 6pt
+
+It must be notice that execution times are compilation-free, because all-subset-regression algorithms must perform thousand to millions of regressions where compilation time is absent (it only affects the first regression).
+\vskip 6pt
 
 
 \input{bib.tex}
