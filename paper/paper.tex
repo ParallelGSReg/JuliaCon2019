@@ -63,22 +63,6 @@ Through the gsreg function of the \verb interface.jl  internal package, users se
 
 \begin{algorithm}[ht]
     \caption{Gradient Based Optimization of Scene Parameters}
-    \label{alg:inv_render}
-    \SetAlgoLined
-    \KwResult{Optimized set of Camera Parameters}
-    Initial Guess of Parameters\;
-    \While{not \textbf{converged} or iter < max\_iter}{
-        gs = gradient(params) \textbf{do}\\
-        ~~~~~~img = rendered image with params\;
-        ~~~~~~loss = mean\_squared\_loss(img, target\_img)\;
-        \textbf{end}\;
-        \For{param in params}{
-            update!(optimizer, param, gs[param])\;
-        }
-        \If{loss < tolerance}{
-            converged = True\;
-        }
-    }
 \end{algorithm}
 
 \input{bib.tex}
