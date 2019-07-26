@@ -81,6 +81,52 @@ A detailed speed-up analysis is also available for the 25-covariate case. In fig
 % INSERT PSEUDOCODE HERE  FIGURES 2 and 3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+\section{Why GlobalSearchRegression.jl is faster than existing alternatives?}
+\label{sec:whygsreg}
+\subsection{JULIA platform}
+\label{subsub:juliaplat}
+
+Despite some \verb GlobalSearchRegression.jl  specific features to be examined below, our all-subset-regression algorithm benefits from the well-known Julia language efficiency for High Performance Computing tasks.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INSERT PSEUDOCODE HERE TABLE 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Julia JIT-compilation allows packages to run faster than those executed using interpreted or byte-compiled languages (like R or Stata-Mata). Indeed, basic functions running on Julia can be up to 251 and 368 times faster than those running in R and Stata, respectively -with an average speed-up of 75 and 90, see Table 2-.
+
+\subsection{Parallel strategy and memory setup}
+\label{subsub:parallelst}
+
+It is well know that multicore architectures can be used to speed-up execution times through two main paradigms: data and task-parallelism \cite{zaki2001}. The preferred strategy critically depends on:
+\begin{enumerate}
+    \item Database structure;
+    \item Algorithm serial portion; and
+    \item Interthread communication costs.
+\end{enumerate} 
+
+The first discussion is about tall vs fat data. While tall databases are more suitable for data-parallelism \cite{babu2013}, fat-structures improve relative performance of task-parallelism (because tasks increase exponentially with covariates/columns in feature selection problems, see \cite{foster1994}). \vskip 6pt
+
+Additionally, the choice between alternative paradigms takes into account the Amdahl's Law for the specific algorithm to be used. Task-parallelism is usually better for econometric and machine learning algorithms requiring some specific serial optimization paths (i.e. arima-arfima models), while data-parallelism performs better under linear-algebra solutions (i.e. OLS-family estimators, see \cite{guo2012}). \vskip 6pt
+
+Finally, we have the problem of intercomunication costs. Data-parallelism -generally- involves intense needs of inter-thread-communication. While task-parallelism communication costs depends on Load-Balancing choices (i.e. Dynamic vs Static), they are usually lower than data-parallelism ones \footnote{At least when Static Load Balancing is implemented, because it allows for Coarse-grained granularity \cite{gordon2006}} \cite{MOREANO2017}. \vskip 6pt
+
+For feature selection problems, pros and cons of alternative strategies often determine that available cores should be used for task parallelism. Databases are fat, data-mining algorithms can include large serial portions, and intercomunication costs can be huge for large-multicore architectures. These reasons explain why all available all-subset-regression packages use taks-parallism to speed-up execution times. \vskip 6pt
+
+As for the memory setup, there are also alternative methodologies. First, it's necessary to choose among Static vs. Dynamic memory allocations \citeprajapati2015}. To improve speed-up, Static "once-and-for-all" allocations are often preferred (even at a cost of higher average memory utilization). Second, shared-memory strategies must be determined. Depending on both object-size and CPU architecture -cache size and its distribution among cores-, it could be optimal to use large shared arrays or -alternatively- smaller core-specific objects. Splitting output matrices to work with smaller non-shared arrays could be useful for cache optimization purposes, but it could also entail additional communication costs and higher memory requirements \cite{ahmed2015}. In practice, feature selection algorithms usually prefer shared-arrays for high performance computing. \vskip 6pt
+
+\verb GlobalSearchRegression.jl  (execution-time) advantages have been obtained combining:
+\begin{itemize}
+    \item[a)]  Task-parallelism
+    \item[b)]  Static Load-Balancing
+    \item[c)]  Coarse-grained granularity   
+    \item[d)]  Static memory allocation
+    \item[e)]  Efficient shared-array implementation
+\end{itemize}
+
+While some of these characteristics are shared with R and Stata alternatives (\verb MuMin-pdredge  and \verb GSREG,  respectively), our Static Load-Balancing algorithm outperform the round-robin R scheduling (implemented by the clusterapply function included in the \verb parallel  R-package see \cite{deb2013}) and the Shared-Array strategy significantly improves I/O performance against Stata. By construction, pure Static Load-Balancing in GlobalSearchRegression.jl avoids Round-Robin communication costs and execution gaps. This advantage overcompensate minimal\footnote{Minimal because our static scheduler guarantees that average task-complexity will not be too different among workers} load-asymmetries, associated with any static scheduling. In turn, using efficient shared-arrays to store all-subset-regression results allows us to outperform the \verb Stata-GSREG  methodology which heavily relies on slower I/O disk operations (because multiple instances must be launched to enable task-parallelism and, therefore, shared-arrays become unfeasible). \vskip 6pt
+
 \input{bib.tex}
 \end{document}
 
