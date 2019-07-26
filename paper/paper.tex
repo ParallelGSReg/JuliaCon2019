@@ -145,6 +145,9 @@ where
 
 The QR decomposition is fast and provides stable numerical solutions under rank-deficient matrices. Alternative factorizations are either slower (SVD decomposition) or potentially unstable (Cholesky decomposition) \cite{agarwal2014}. \vskip 6pt
 
+\verb GlobalSearchRegression.jl  OLS estimation through QR-decompositions outperform existing Julia alternatives (like \verb GLM.jl)  allowing for large speed-ups compared with \verb R-lm    and \verb Stata-regress  commands. Table 3 shows execution time differences for a 200 covariates - 1000 observations - multivariate linear regression \footnote{Execution times were calculated for alternative OLS algorithms available for all-subset-regression packages in Julia, and Stata.}.
+\vskip 6pt
+
 \input{bib.tex}
 \end{document}
 
