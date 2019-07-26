@@ -61,9 +61,6 @@ Written in Julia, GlobalSearchRegression is a parallel (and improved) version of
 Through the gsreg function of the \verb interface.jl  internal package, users set the appropriate database to be used, the general unrestricted model -GUM, which defines the search space- and additional options for model selection. With this information and complementary supporting functions and definitions provided by \verb strings.jl  -i.e. error messages-, \verb utils.jl  -i.e. equation formatting, combinatorial analysis, database manipulation, sorting results, etc.- and \verb gsreg_results.jl  -i.e. the structure to save estimation results-, the \verb core.jl  package perform the all-subset-regression algorithm explained in the pseudocode below, to obtain the following outputs: 1) a matrix -optionally exported to a csv file through \verb utils.jl-  including egression coefficients, selection criteria, observations and (optionally) t-test, residual tests, averaging-weights and out-of-sample metrics for every lternative model; 2) a text file -also displayed on screen- which contains the best model specification and (optionally) model averaging results in terms of he user-selected information criteria -see multiple examples in \verb runtest.jl-. \vskip 6pt
 \break
 
-\begin{algorithm}[ht]
-    \caption{Gradient Based Optimization of Scene Parameters}
-\end{algorithm}
 
 \input{bib.tex}
 \end{document}
