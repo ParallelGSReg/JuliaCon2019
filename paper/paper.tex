@@ -1,10 +1,15 @@
 % JuliaCon proceedings template
 \documentclass{juliacon}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{subfigure}
 \usepackage{amsmath}
 \setcounter{page}{1}
 
-\begin{document}
 \input{header}
+\begin{document}
 \maketitle
 \begin{abstract}
 
@@ -302,7 +307,7 @@ The first discussion is about tall vs fat data. While tall databases are more su
 
 Additionally, the choice between alternative paradigms takes into account the Amdahl's Law for the specific algorithm to be used. Task-parallelism is usually better for econometric and machine learning algorithms requiring some specific serial optimization paths (i.e. arima-arfima models), while data-parallelism performs better under linear-algebra solutions (i.e. OLS-family estimators. \vskip 6pt
 
-Finally, we have the problem of intercomunication costs. Data-parallelism -generally- involves intense needs of inter-thread-communication. While task-parallelism communication costs depends on Load-Balancing choices (i.e. Dynamic vs Static), they are usually lower than data-parallelism ones \footnote{At least when Static Load Balancing is implemented, because it allows for Coarse-grained granularity. \vskip 6pt
+Finally, we have the problem of intercomunication costs. Data-parallelism -generally- involves intense needs of inter-thread-communication. While task-parallelism communication costs depends on Load-Balancing choices (i.e. Dynamic vs Static), they are usually lower than data-parallelism ones \footnote{At least when Static Load Balancing is implemented, because it allows for Coarse-grained granularity}. \vskip 6pt
 
 For feature selection problems, pros and cons of alternative strategies often determine that available cores should be used for task parallelism. Databases are fat, data-mining algorithms can include large serial portions, and intercomunication costs can be huge for large-multicore architectures. These reasons explain why all available all-subset-regression packages use taks-parallism to speed-up execution times. \vskip 6pt
 
@@ -321,7 +326,7 @@ While some of these characteristics are shared with R and Stata alternatives (\v
 
 \subsection{OLS estimation}
 \label{subsub:ols}
-Efficient Ordinary Least Squares (OLS) algorithms rely on Linear Algebra operations (matrix decomposition, matrix inversion, etc.).\footnote{Optimization alternatives (i.e. Gradient descent), while quite inefficient for linear models, can also be used for non-linear estimations. The traditional $(X'X)^{-1}$ operation could be time-expensive with unstable solutions under certain conditions. A preferred method is the QR-decomposition developed by Francis and Kublanovskaya. The QR factorization allows us to decompose any full rank $N \times p$ matrix $\bar{X}$ as:
+Efficient Ordinary Least Squares (OLS) algorithms rely on Linear Algebra operations (matrix decomposition, matrix inversion, etc.).\footnote{Optimization alternatives (i.e. Gradient descent), while quite inefficient for linear models, can also be used for non-linear estimations.} The traditional $(X'X)^{-1}$ operation could be time-expensive with unstable solutions under certain conditions. A preferred method is the QR-decomposition developed by Francis and Kublanovskaya. The QR factorization allows us to decompose any full rank $N \times p$ matrix $\bar{X}$ as:
 
 \begin{equation}
     X=QR
