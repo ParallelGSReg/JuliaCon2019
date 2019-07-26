@@ -132,6 +132,10 @@ While some of these characteristics are shared with R and Stata alternatives (\v
 
 Efficient Ordinary Least Squares (OLS) algorithms rely on Linear Algebra operations (matrix decomposition, matrix inversion, etc.).\footnote{Optimization alternatives (i.e. Gradient descent), while quite inefficient for linear models, can also be used for non-linear estimations \cite{abdi2007}} The traditional $(X'X)^{-1}$ operation could be time-expensive with unstable solutions under certain conditions \cite{jameson1981}. A preferred method is the QR-decomposition developed by Francis \cite{francis1961} and Kublanovskaya \cite{kublanovskaya1962s}. The QR factorization allows us to decompose any full rank $N \times p$ matrix $\bar{X}$ as:
 
+\begin{equation}
+    X=QR
+\end{equation}
+
 
 \input{bib.tex}
 \end{document}
