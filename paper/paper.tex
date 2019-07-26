@@ -314,9 +314,23 @@ It must be notice that execution times are compilation-free, because all-subset-
 \vskip 6pt
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% INSERT PSEUDOCODE HERE TABLE 3
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Table 3
+\begin{table}[htbp]
+  \centering
+\tbl{Execution times for different OLS algorithms in R, Stata and Julia}{
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+      & GlobalSearchRegression.jl &R-lm & Stata-reg & GLM.jl \\
+    \hline
+    Execution time & 0.012 & 0.06 & 0.2 & 0.023 \\
+    \hline
+    Speed-up & 1 & 5 & 16.67 & 1.92 \\
+    \hline
+    \end{tabular}}
+    \begin{tablenote}
+    Note: Execution times were obtained using a i7-7500 dual-core build, with 8 GiB of DDR4 RAM, under Windows 10 and running Julia 1.1.0, Stata 13 and RStudio 3.6.0. Speed-ups are obtaining dividing each execution time by the GlobalSearchRegression.jl execution time.
+    \end{tabnote}
+\end{table}
 
 \section{Conclusion}
 \label{sec:con}
