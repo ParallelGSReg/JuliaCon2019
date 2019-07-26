@@ -8,7 +8,7 @@
 \maketitle
 \begin{abstract}
 
-The aim of this paper is twofold. The first one is to describe a novel research-project designed for building bridges between machine learning and econometric worlds. The second one is to introduce the main characteristics and comparative performance of the first Julia-native all-subset regression algorithm included in \verb GlobalSearchRegression.jl  (v1.0.3). As other available alternatives, this algorithm allows researchers to obtain the best model specification among all possible covariate combinations - in terms of user defined information criteria-, but up to 3165 and 197 times faster than STATA and R alternatives, respectively. 
+The aim of this paper is twofold. The first one is to describe a novel research-project designed for building bridges between machine learning and econometric worlds (\verb ModelSelection.jl). The second one is to introduce the main characteristics and comparative performance of the first Julia-native all-subset regression algorithm included in \verb GlobalSearchRegression.jl  (v1.0.3). As other available alternatives, this algorithm allows researchers to obtain the best model specification among all possible covariate combinations - in terms of user defined information criteria-, but up to 3165 and 197 times faster than STATA and R alternatives, respectively. 
 
 \end{abstract}
 
@@ -71,7 +71,6 @@ In table 1, we present a performance comparison of our GLobalSearchRegression Ju
 Execution times were obtained from a HED architecture using a Threadripper 1950x build, with 16 cores (32 threads) overclocked to 3.8GHz and 64 GiB of DDR4-RAM at 3200Mhz. Comparative scripts were implemented on Julia 1.0.3, R 3.6.0 and Stata 15 IC, running on Ubuntu 18.04.2 LTS -Linux kernel 4.15-\footnote{All these test are available \href{https://github.com/ParallelGSReg/GlobalSearchRegression.jl/tree/master/juliacon2019proceedings/reproducibility}{here}} \vskip 6pt
 
 For experimental -random variable- databases with a few covariates -up to 15 explanatory variables-, our Julia algorithm only provides significant time improvement in standard personal computers -e.g. 4 cores-, being up to twice faster than R and 4 times faster than Stata. For HED computers or HPC nodes, there is almost no difference among the best result obtained for each alternative. \vskip 6pt
-
 
 However, for databases with 20 or more covariates, our Julia all-subset-regression code is always faster, irrespective of the number of observations or threads -up to 3165 times faster than STATA and 197 times faster than R-. Execution time differences exponentially increase with the number of covariates and slightly decrease with available observations. Moreover, Stata and R alternatives become unfeasible for databases with 25 or more covariates. For a confirmatory nalysis,in figure 2 we present execution-time kernel densities for the 20 covariates - 100 observations - 32 threads case, obtained from 300 independent non-cached) runs. Kernel results show that execution time differences are not an artifact obtained from noisy runs. Our Julia algorithm is consistently faster han R and Stata alternatives. \vskip 6pt
 
@@ -164,7 +163,7 @@ It must be notice that execution times are compilation-free, because all-subset-
 \end{quote}
 \vspace{2mm}
 
-As Hal Varian emphasizes, there is a need for mutual collaboration between machine learning developers/practitioners and econometricians. In this paper we describe a research-project aimed at building bridges between machine learning and econometric worlds and introduce the main characteristics of its first outcome: a Julia-native all-subset regression algorithm (\verb GlobalSearchRegression.jl)  which runs up to 3165 and 197 times faster than existing Stata and R alternatives, respectively. \vskip 6pt
+As Hal Varian emphasizes, there is a need for mutual collaboration between machine learning developers/practitioners and econometricians. In this paper we describe a research-project aimed at building bridges between machine learning and econometric worlds (\verb ModelSelection.jl) and introduce the main characteristics of its first outcome: a Julia-native all-subset regression algorithm (\verb GlobalSearchRegression.jl)  which runs up to 3165 and 197 times faster than existing Stata and R alternatives, respectively. \vskip 6pt
 
 Throughout the paper, it has been shown that execution-time gains are explained by multiple efficient strategies combined in \verb GlobalSearchRegression.jl  i.e. task parallelism, static load-balancing, coarse-grained granularity, static memory allocation, efficient shared array implementation, and OLS estimation using neat QR decompositions). However, the main 'explanatory variable' is the impressive speed-up in atomic operations obtained using the Julia language. \vskip 6pt
 
