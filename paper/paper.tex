@@ -88,7 +88,6 @@ A detailed speed-up analysis is also available for the 25-covariate case. In fig
 
 Despite some \verb GlobalSearchRegression.jl  specific features to be examined below, our all-subset-regression algorithm benefits from the well-known Julia language efficiency for High Performance Computing tasks.
 
-\vspace{-2mm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INSERT PSEUDOCODE HERE TABLE 2
@@ -98,12 +97,14 @@ Julia JIT-compilation allows packages to run faster than those executed using in
 
 \subsection{Parallel strategy and memory setup}
 \label{subsub:parallelst}
+
 It is well know that multicore architectures can be used to speed-up execution times through two main paradigms: data and task-parallelism \cite{zaki2001}. The preferred strategy critically depends on:
 \begin{enumerate}
     \item Database structure;
     \item Algorithm serial portion; and
     \item Interthread communication costs.
 \end{enumerate} 
+
 The first discussion is about tall vs fat data. While tall databases are more suitable for data-parallelism \cite{babu2013}, fat-structures improve relative performance of task-parallelism (because tasks increase exponentially with covariates/columns in feature selection problems, see \cite{foster1994}). \vskip 6pt
 
 Additionally, the choice between alternative paradigms takes into account the Amdahl's Law for the specific algorithm to be used. Task-parallelism is usually better for econometric and machine learning algorithms requiring some specific serial optimization paths (i.e. arima-arfima models), while data-parallelism performs better under linear-algebra solutions (i.e. OLS-family estimators, see \cite{guo2012}). \vskip 6pt
