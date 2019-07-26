@@ -122,8 +122,8 @@ Through the gsreg function of the \verb interface.jl  internal package, users se
 \begin{table*}[!t]
 \centering
 \tbl{Average execution time and speed-up metrics -over 5 runs-}{
-    \scalebox{0.8}{
-    \begin{tabular}{|C{1cm}|C{1cm}|C{1cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|}
+    %\scalebox{0.8}{
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
     \hline
     Cov. & Obs & Threads & \multicolumn{3}{c|}{Execution time (in seconds)} & \multicolumn{3}{c|}{Parallel Speed-up} & \multicolumn{2}{c|}{Julia Speed-up} \\
 \cline{4-11}      &   &   & Julia & R & Stata & Julia & R & Stata & Over R & Over Stata \\
@@ -200,7 +200,7 @@ Through the gsreg function of the \verb interface.jl  internal package, users se
     \hline
     25 & 10000 & 32 & 4660.4 &   &   & 20.1 &   &   &   &  \\
     \hline
-    \end{tabular}    }   }
+    \end{tabular}}
 \end{table*}
 
 In table 1, we present a performance comparison of our GLobalSearchRegression Julia-package against its main alternatives: MuMin-pdredge and GSREG (written in  and Stata\footnote{The parallel version of Stata-GSREG is still under development. A preliminary version is available upon request from authors}, espectively).
