@@ -116,16 +116,7 @@ For feature selection problems, pros and cons of alternative strategies often de
 
 As for the memory setup, there are also alternative methodologies. First, it's necessary to choose among Static vs. Dynamic memory allocations \citeprajapati2015}. To improve speed-up, Static "once-and-for-all" allocations are often preferred (even at a cost of higher average memory utilization). Second, shared-memory strategies must be determined. Depending on both object-size and CPU architecture -cache size and its distribution among cores-, it could be optimal to use large shared arrays or -alternatively- smaller core-specific objects. Splitting output matrices to work with smaller non-shared arrays could be useful for cache optimization purposes, but it could also entail additional communication costs and higher memory requirements \cite{ahmed2015}. In practice, feature selection algorithms usually prefer shared-arrays for high performance computing. \vskip 6pt
 
-\verb GlobalSearchRegression.jl  (execution-time) advantages have been obtained combining:
-\begin{itemize}
-    \item[a)]  Task-parallelism
-    \item[b)]  Static Load-Balancing
-    \item[c)]  Coarse-grained granularity   
-    \item[d)]  Static memory allocation
-    \item[e)]  Efficient shared-array implementation
-\end{itemize}
 
-While some of these characteristics are shared with R and Stata alternatives (\verb MuMin-pdredge  and \verb GSREG,  respectively), our Static Load-Balancing algorithm outperform the round-robin R scheduling (implemented by the clusterapply function included in the \verb parallel  R-package see \cite{deb2013}) and the Shared-Array strategy significantly improves I/O performance against Stata. By construction, pure Static Load-Balancing in GlobalSearchRegression.jl avoids Round-Robin communication costs and execution gaps. This advantage overcompensate minimal\footnote{Minimal because our static scheduler guarantees that average task-complexity will not be too different among workers} load-asymmetries, associated with any static scheduling. In turn, using efficient shared-arrays to store all-subset-regression results allows us to outperform the \verb Stata-GSREG  methodology which heavily relies on slower I/O disk operations (because multiple instances must be launched to enable task-parallelism and, therefore, shared-arrays become unfeasible). \vskip 6pt
 
 \input{bib.tex}
 \end{document}
