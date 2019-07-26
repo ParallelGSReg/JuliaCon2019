@@ -152,6 +152,29 @@ It must be notice that execution times are compilation-free, because all-subset-
 \vskip 6pt
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INSERT PSEUDOCODE HERE TABLE 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusion}
+\label{sec:con}
+\vspace{2mm}
+\begin{quote}
+\textit{"There are a number of areas where there would be opportunities for fruitful collaboration between econometrics and machine learning [... and] the most important area for collaboration involves causal inference"}. \cite{varian2014}
+\end{quote}
+\vspace{2mm}
+
+As Hal Varian emphasizes, there is a need for mutual collaboration between machine learning developers/practitioners and econometricians. In this paper we describe a research-project aimed at building bridges between machine learning and econometric worlds and introduce the main characteristics of its first outcome: a Julia-native all-subset regression algorithm (\verb GlobalSearchRegression.jl)  which runs up to 3165 and 197 times faster than existing Stata and R alternatives, respectively. \vskip 6pt
+
+Throughout the paper, it has been shown that execution-time gains are explained by multiple efficient strategies combined in \verb GlobalSearchRegression.jl  i.e. task parallelism, static load-balancing, coarse-grained granularity, static memory allocation, efficient shared array implementation, and OLS estimation using neat QR decompositions). However, the main 'explanatory variable' is the impressive speed-up in atomic operations obtained using the Julia language. \vskip 6pt
+
+Notwithstanding, increasing availability of Big and -more challenging- Fat-data, force us to go beyond pure all-subset-regression approaches and combine it with machine learning feature selection algorithms. Work in progress include a new hybrid package merging LASSO capabilities, all-subset-regression robustness nd K-fold cross validation strengths.
+
+\section{Acknowledgments}
+\label{sec:ackno}
+This research benefited from the financial support of 1) the National Scientific and Technical Research Council and the YPF-Foundation (PIO CONICET-YPF 13320150100020CO); and 2) the National Agency for Scientific and Technological Promotion (PICT-2017-0867). We would also like to thank PhD. Jorge Carrera for his technical assistance on Big-data econometric algorithms.
+
+
 \input{bib.tex}
 \end{document}
 
